@@ -207,7 +207,7 @@ def getHumanMove(board, isFirstMove):
                 tokenx, tokeny = None, None
                 draggingToken = False
 # ------ person 3 starts comments ******
-       if tokenx != None and tokeny != None:
+        if tokenx != None and tokeny != None:
             drawBoard(board, {'x':tokenx - int(SPACESIZE / 2), 'y':tokeny - int(SPACESIZE / 2), 'color':RED})
         else:
             drawBoard(board)
@@ -294,7 +294,7 @@ def getPotentialMoves(board, tile, lookAhead):
         makeMove(dupeBoard, tile, firstMove)
 
 # ------ person 4 comments here ******
-       if isWinner(dupeBoard, tile):
+        if isWinner(dupeBoard, tile):
             # a winning move automatically gets a perfect fitness
             potentialMoves[firstMove] = 1
             break # don't bother calculating other moves
