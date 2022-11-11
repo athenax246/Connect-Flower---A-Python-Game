@@ -119,6 +119,7 @@ def runGame(isFirstGame):
             winnerImg = TIEWINNERIMG
             break
 
+# ------- second person starts here *********
     while True:
         # Keep looping until player clicks the mouse or quits.
         drawBoard(mainBoard)
@@ -205,7 +206,8 @@ def getHumanMove(board, isFirstMove):
                         return
                 tokenx, tokeny = None, None
                 draggingToken = False
-        if tokenx != None and tokeny != None:
+# ------ person 3 starts comments ******
+       if tokenx != None and tokeny != None:
             drawBoard(board, {'x':tokenx - int(SPACESIZE / 2), 'y':tokeny - int(SPACESIZE / 2), 'color':RED})
         else:
             drawBoard(board)
@@ -290,7 +292,9 @@ def getPotentialMoves(board, tile, lookAhead):
         if not isValidMove(dupeBoard, firstMove):
             continue
         makeMove(dupeBoard, tile, firstMove)
-        if isWinner(dupeBoard, tile):
+
+# ------ person 4 comments here ******
+       if isWinner(dupeBoard, tile):
             # a winning move automatically gets a perfect fitness
             potentialMoves[firstMove] = 1
             break # don't bother calculating other moves
