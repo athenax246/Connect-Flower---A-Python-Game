@@ -3,8 +3,6 @@
 # http://inventwithpython.com/pygame/buggy
 # Bug Description: When dropping a token on a tall stack, the token appears to drop past the top token on the stack.
 
-#testing
-
 # Four-In-A-Row (a Connect Four clone)
 # By Al Sweigart al@inventwithpython.com
 # http://inventwithpython.com/pygame
