@@ -8,6 +8,13 @@
 # http://inventwithpython.com/pygame
 # Released under a "Simplified BSD" license
 
+#Current distribution: (these are assigned with random name selector, feel free to change anything!)
+#Part 1 - Juman 
+#Part 2 - Athena
+#Part 3 - Iris
+#Part 4 - Kohinoor
+#The parts are commented on the source code
+
 import random, copy, sys, pygame
 from pygame.locals import *
 
@@ -133,8 +140,9 @@ def runGame(isFirstGame):
             elif event.type == MOUSEBUTTONUP:
                 return
 
-
+# this function allows the player to move a piece of token
 def makeMove(board, player, column):
+    # lowest checking if there is an empty space in that colum to fit the token
     lowest = getLowestEmptySpace(board, column)
     if lowest != -1:
         board[column][lowest] = player
