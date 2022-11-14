@@ -147,7 +147,7 @@ def makeMove(board, player, column):
     if lowest != -1:
         board[column][lowest] = player
 
-
+# creates the display for the board
 def drawBoard(board, extraToken=None):
     DISPLAYSURF.fill(BGCOLOR)
 
@@ -168,24 +168,24 @@ def drawBoard(board, extraToken=None):
         elif extraToken['color'] == BLACK:
             DISPLAYSURF.blit(BLACKTOKENIMG, (extraToken['x'], extraToken['y'], SPACESIZE, SPACESIZE))
 
-    # draw board over the tokens
+    # draw board over the tokens, so that the board image appears above the token
     for x in range(BOARDWIDTH):
         for y in range(BOARDHEIGHT):
             spaceRect.topleft = (XMARGIN + (x * SPACESIZE), YMARGIN + (y * SPACESIZE))
             DISPLAYSURF.blit(BOARDIMG, spaceRect)
 
-    # draw the red and black tokens off to the side
+    # display the starting piles of tokens: draw the red and black tokens off to the side
     DISPLAYSURF.blit(REDTOKENIMG, REDPILERECT) # red on the left
     DISPLAYSURF.blit(BLACKTOKENIMG, BLACKPILERECT) # black on the right
 
-
+# function to create a new board
 def getNewBoard():
     board = []
     for x in range(BOARDWIDTH):
         board.append([EMPTY] * BOARDHEIGHT)
     return board
 
-
+# function for player's movement of the token
 def getHumanMove(board, isFirstMove):
     draggingToken = False
     tokenx, tokeny = None, None
@@ -206,6 +206,7 @@ def getHumanMove(board, isFirstMove):
                 if tokeny < YMARGIN and tokenx > XMARGIN and tokenx < WINDOWWIDTH - XMARGIN:
                     # let go at the top of the screen.
                     column = int((tokenx - XMARGIN) / SPACESIZE)
+                    # player is only able to drop the token if the move is valid
                     if isValidMove(board, column):
                         animateDroppingToken(board, column, RED)
                         board[column][getLowestEmptySpace(board, column)] = RED
@@ -214,6 +215,7 @@ def getHumanMove(board, isFirstMove):
                         return
                 tokenx, tokeny = None, None
                 draggingToken = False
+                
 # ------ person 3 starts comments ******
         if tokenx != None and tokeny != None:
             drawBoard(board, {'x':tokenx - int(SPACESIZE / 2), 'y':tokeny - int(SPACESIZE / 2), 'color':RED})
