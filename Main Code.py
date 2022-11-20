@@ -235,7 +235,10 @@ def animateDroppingToken(board, column, color):
     y = YMARGIN - SPACESIZE
     dropSpeed = 1.0
 
-    lowestEmptySpace = column
+    #the bug from buggy was here, it is fixed
+    #the code used to be "lowestEmptySpace = column" which will cause the token to drop through the entire column.
+    #the fix uses the getlowestEmptySpace function to get the token to drop to exactly the lowest empty space on the board (but not past it).
+    lowestEmptySpace = getLowestEmptySpace(board, column)
 
     while True:
         y += int(dropSpeed)
