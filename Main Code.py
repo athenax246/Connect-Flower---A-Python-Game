@@ -11,8 +11,8 @@
 #Current distribution: (these are assigned with random name selector, feel free to change anything!)
 #Part 1 - Juman 
 #Part 2 - Athena
-#Part 3 - Iris
-#Part 4 - Kohinoor
+#Part 3 - Kohinoor
+#Part 4 - Iris
 #The parts are commented on the source code
 
 import random, copy, sys, pygame
