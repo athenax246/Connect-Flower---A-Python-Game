@@ -128,93 +128,125 @@ def runGame(isFirstGame):
 
 # ------- second person starts here *********
     while True:
-        # Keep looping until player clicks the mouse or quits.
-        drawBoard(mainBoard)
-        DISPLAYSURF.blit(winnerImg, WINNERRECT)
-        pygame.display.update()
-        FPSCLOCK.tick()
-        for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT or (event.type == KEYUP and event.key == K_ESCAPE):
-                pygame.quit()
-                sys.exit()
-            elif event.type == MOUSEBUTTONUP:
-                return
+        # the while True loop keep repeating the code inside it until the player clicks the mouse or quits.
+        drawBoard(mainBoard)  #create the mainboard
+        DISPLAYSURF.blit(winnerImg, WINNERRECT) # "blit" stands for Block Transfer, it copy winner image from the source file to the display surface
+      
+        pygame.display.update() # update/refresh the display, make the surface appear on the user's monitor
+      
+        FPSCLOCK.tick() #update the clock once per frame
+      
+        #this is a for loop that handles events
+        for event in pygame.event.get():  # for each event that we get from the queue
+            if event.type == pygame.QUIT or (event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE):
+            #QUIT happens when the user closes the game window by pressing the [X] button
+            #KEYUP means when a key is released, K_ESCAPE is the escape key. So when the user presses the escape key, the game would close         
+              pygame.quit() #quit the game, uninitialize pygame modules
+              sys.exit() #exit the system
 
-# this function allows the player to move a piece of token
+            elif event.type == MOUSEBUTTONUP: # MOUSEBUTTONUP is when the mouse button is released (after the player drags token to the top of a stack)
+                return #return and comes out of the function runGame
+
 def makeMove(board, player, column):
-    # lowest checking if there is an empty space in that colum to fit the token
-    lowest = getLowestEmptySpace(board, column)
-    if lowest != -1:
-        board[column][lowest] = player
+    '''
+    board (list) - tracking what's on the game board
+    player (str) - this differentiates between the human player and the computer
+    column (int) - this is the column that the token will be placed on (or attempted to be placed on)
+    
+    This function determines whether or not the person or the computer can add a token to a column.
+    It makes sure that the token is placed at the lowest possible space in the column by using getLowestEmptySpace.
+    If there is no space in the column selected by the player, then the variable "lowest" would equal -1, and the move cannot be made. Otherwise, the player's token will be put into the lowest empty space in the selected column.
+    '''
+    lowest = getLowestEmptySpace(board, column) # lowest checking if there is an empty space in that column to fit the token
+    if lowest != -1: #if there is space to fit the token
+        board[column][lowest] = player #the lowest row of the selected column of the board will be changed to a token (with the player's colour)
 
-# creates the display for the board
 def drawBoard(board, extraToken=None):
-    DISPLAYSURF.fill(BGCOLOR)
+    '''
+    This function creates the display for the game board. 
+    It creates rectangles barriers for the tokens, extra tokens, board image, and token piles.
+  
+    board (list) - tracking what's on the game board
+    extraToken=None - each time the board is drawn, the amount of extra token is reset to zero (another extra token will be generated if the player drags a token from their stack)
+    '''
+    DISPLAYSURF.fill(BGCOLOR)  #the background colour fills the display screen
 
-    # draw tokens
-    spaceRect = pygame.Rect(0, 0, SPACESIZE, SPACESIZE)
+    spaceRect = pygame.Rect(0, 0, SPACESIZE, SPACESIZE) #create a variable spaceRect to store rectangle coordinates of around each token
     for x in range(BOARDWIDTH):
-        for y in range(BOARDHEIGHT):
-            spaceRect.topleft = (XMARGIN + (x * SPACESIZE), YMARGIN + (y * SPACESIZE))
-            if board[x][y] == RED:
-                DISPLAYSURF.blit(REDTOKENIMG, spaceRect)
-            elif board[x][y] == BLACK:
-                DISPLAYSURF.blit(BLACKTOKENIMG, spaceRect)
+        for y in range(BOARDHEIGHT): #nested for loops iterating each column and row from the game board
+            spaceRect.topleft = (XMARGIN + (x * SPACESIZE),
+                                 YMARGIN + (y * SPACESIZE)) #fit a rectangle to each space in the columns and rows, use ".topleft" to align them
+            if board[x][y] == RED: #if that space on the board is assigned to a token from the human player
+                DISPLAYSURF.blit(REDTOKENIMG, spaceRect) #display the human token image in the rectangle space
+            elif board[x][y] == BLACK: #if that space on the board is assigned to a token from the computer 
+                DISPLAYSURF.blit(BLACKTOKENIMG, spaceRect) #display the computer token image in the rectangle space
 
-    # draw the extra token
-    if extraToken != None:
-        if extraToken['color'] == RED:
-            DISPLAYSURF.blit(REDTOKENIMG, (extraToken['x'], extraToken['y'], SPACESIZE, SPACESIZE))
-        elif extraToken['color'] == BLACK:
-            DISPLAYSURF.blit(BLACKTOKENIMG, (extraToken['x'], extraToken['y'], SPACESIZE, SPACESIZE))
+    # when the human player or computer drag a token, an extra token will be created
+    if extraToken != None: #if there should exist an extra token
+        if extraToken['color'] == RED: #if the extra token from the human player
+            DISPLAYSURF.blit(
+                REDTOKENIMG,
+                (extraToken['x'], extraToken['y'], SPACESIZE, SPACESIZE)) #draw an extra token image to the appropriate location on the display surface
+        elif extraToken['color'] == BLACK: #if the extra token is from the computer
+            DISPLAYSURF.blit(
+                BLACKTOKENIMG,
+                (extraToken['x'], extraToken['y'], SPACESIZE, SPACESIZE)) #draw an extra token image to the appropriate location on the display surface
 
-    # draw board over the tokens, so that the board image appears above the token
+    # draw board over the tokens, so that the blue board structure image appears above the tokens
     for x in range(BOARDWIDTH):
-        for y in range(BOARDHEIGHT):
-            spaceRect.topleft = (XMARGIN + (x * SPACESIZE), YMARGIN + (y * SPACESIZE))
-            DISPLAYSURF.blit(BOARDIMG, spaceRect)
+        for y in range(BOARDHEIGHT): #nested for loops iterating each column and row from the game board
+            spaceRect.topleft = (XMARGIN + (x * SPACESIZE),
+                                 YMARGIN + (y * SPACESIZE))
+            DISPLAYSURF.blit(BOARDIMG, spaceRect) #draw a single square picture of the game board onto each space of the board, and align image with ".topleft"
 
-    # display the starting piles of tokens: draw the red and black tokens off to the side
-    DISPLAYSURF.blit(REDTOKENIMG, REDPILERECT) # red on the left
-    DISPLAYSURF.blit(BLACKTOKENIMG, BLACKPILERECT) # black on the right
+    # display the starting piles of tokens
+    DISPLAYSURF.blit(REDTOKENIMG, REDPILERECT)  # human player's tokens on the left, at the space of the pile rectangle
+    DISPLAYSURF.blit(BLACKTOKENIMG, BLACKPILERECT)  # computer's tokens on the right, at the space of the pile rectangle
 
-# function to create a new board
 def getNewBoard():
-    board = []
+  '''
+  This function create a new empty board.
+  '''
+    board = [] #the board variable is assigned to an empty list
     for x in range(BOARDWIDTH):
-        board.append([EMPTY] * BOARDHEIGHT)
-    return board
+        board.append([EMPTY] * BOARDHEIGHT) #add zero for each entry in each column of the matrix
+    return board #return the new board, with the proper dimensions and all zeros entries
 
-# function for player's movement of the token
 def getHumanMove(board, isFirstMove):
-    draggingToken = False
-    tokenx, tokeny = None, None
+    '''
+    This function controls the human player's movement of the token.
+    It includes the process of dragging and dropping a token to place it on the board.
+
+    board (list) - tracking what's on the game board
+    isFirstMove(bool) - if True, then this is the first move of the human in this game, will need to display the instruction image
+    '''
+    draggingToken = False #default state is not dragging a token
+    tokenx, tokeny = None, None #default state of the location of the token being dragged
     while True:
-        for event in pygame.event.get(): # event handling loop
-            if event.type == QUIT:
+        for event in pygame.event.get():  #handling each event that we get from the queue
+            if event.type == pygame.QUIT or (event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE): #similar to before, close the game if the play clicks the [X] button of the game window or press the escape key
                 pygame.quit()
                 sys.exit()
-            elif event.type == MOUSEBUTTONDOWN and not draggingToken and REDPILERECT.collidepoint(event.pos):
-                # start of dragging on red token pile.
-                draggingToken = True
-                tokenx, tokeny = event.pos
-            elif event.type == MOUSEMOTION and draggingToken:
-                # update the position of the red token being dragged
-                tokenx, tokeny = event.pos
-            elif event.type == MOUSEBUTTONUP and draggingToken:
-                # let go of the token being dragged
-                if tokeny < YMARGIN and tokenx > XMARGIN and tokenx < WINDOWWIDTH - XMARGIN:
-                    # let go at the top of the screen.
-                    column = int((tokenx - XMARGIN) / SPACESIZE)
-                    # player is only able to drop the token if the move is valid
-                    if isValidMove(board, column):
-                        animateDroppingToken(board, column, RED)
-                        board[column][getLowestEmptySpace(board, column)] = RED
-                        drawBoard(board)
-                        pygame.display.update()
-                        return
-                tokenx, tokeny = None, None
-                draggingToken = False
+              
+            elif event.type == MOUSEBUTTONDOWN and not draggingToken and REDPILERECT.collidepoint(event.pos): #if the mouse button is pressed down, and draggingToken state has yet to be activated, and the mouse clicks the human player's token pile
+                draggingToken = True #change the state of the draggingToken variable from False to True
+                tokenx, tokeny = event.pos #the location of the token is set to where the user clicked the mouse
+              
+            elif event.type == MOUSEMOTION and draggingToken: #if the mouse button is pressed down, and draggingToken state has already been activated
+                tokenx, tokeny = event.pos # update the position of the human's token to the current location of the mouse
+              
+            elif event.type == MOUSEBUTTONUP and draggingToken: #if the human let go of the mouse button, and the draggingToken variable has yet to be changed to False (will let go of the token that is being dragged)
+                if tokeny < YMARGIN and tokenx > XMARGIN and tokenx < WINDOWWIDTH - XMARGIN: #if the token is being let go at the top of the screen
+                    column = int((tokenx - XMARGIN) / SPACESIZE) #find the column (integer value) that the token is being dropped onto
+                    
+                    if isValidMove(board, column): #check if the move is valid, player is only able to drop the token if the move is valid
+                        animateDroppingToken(board, column, RED) #use animateDroppingToken function to draw the dropping process of token
+                        board[column][getLowestEmptySpace(board, column)] = RED #place the human's token in the lowest empty row of the appropriate column
+                        drawBoard(board) #update the board, now containing the new token
+                        pygame.display.update() #update the pygame display to include changes to the board
+                        return #exit the function if a valid move is made
+                tokenx, tokeny = None, None #reset token location variables
+                draggingToken = False #reset dragging variable
                 
 # ------ person 3 starts comments ******
         if tokenx != None and tokeny != None:
