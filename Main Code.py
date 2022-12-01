@@ -15,6 +15,8 @@
 #Part 4 - Iris
 #The parts are commented on the source code
 
+# ------- first person starts here ********* Juman
+
 import random, copy, sys, pygame
 from pygame.locals import *
 
@@ -126,7 +128,7 @@ def runGame(isFirstGame):
             winnerImg = TIEWINNERIMG
             break
 
-# ------- second person starts here *********
+# ------- second person starts here ********* Athena
     while True:
         # the while True loop keep repeating the code inside it until the player clicks the mouse or quits.
         drawBoard(mainBoard)  #create the mainboard
@@ -248,7 +250,7 @@ def getHumanMove(board, isFirstMove):
                 tokenx, tokeny = None, None #reset token location variables
                 draggingToken = False #reset dragging variable
                 
-# ------ person 3 starts comments ******
+# ------ person 3 starts comments ****** Kohinoor
         if tokenx != None and tokeny != None:
             drawBoard(board, {'x':tokenx - int(SPACESIZE / 2), 'y':tokeny - int(SPACESIZE / 2), 'color':RED})
         else:
@@ -338,7 +340,7 @@ def getPotentialMoves(board, tile, lookAhead):
             continue
         makeMove(dupeBoard, tile, firstMove)
 
-# ------ person 4 comments here ******
+# ------ person 4 comments here ****** Iris
         if isWinner(dupeBoard, tile):
             # a winning move automatically gets a perfect fitness
             potentialMoves[firstMove] = 1
