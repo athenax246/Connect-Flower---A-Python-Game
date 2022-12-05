@@ -1,6 +1,5 @@
-# This version of the game has a bug in it. See if you can figure out how to fix it.
-# http://inventwithpython.com/pygame/buggy
-# Bug Description: When dropping a token on a tall stack, the token appears to drop past the top token on the stack.
+
+# Buggy's Bug Description: When dropping a token on a tall stack, the token appears to drop past the top token on the stack.
 
 # Four-In-A-Row (a Connect Four clone)
 # By Al Sweigart al@inventwithpython.com
@@ -12,7 +11,7 @@ from pygame.locals import *
 from replit import audio
 
 BOARDWIDTH = 7  # how many spaces wide the board is
-BOARDHEIGHT = 6  # how many spaces tall the board is
+BOARDHEIGHT = 7  # how many spaces tall the board is
 assert BOARDWIDTH >= 4 and BOARDHEIGHT >= 4, 'Board must be at least 4x4.'
 
 DIFFICULTY = 2  # how many moves to look ahead. (>2 is usually too much)
@@ -43,7 +42,7 @@ typegame = '2P'  #'AI' or '2P'
 
 def main():
     global FPSCLOCK, DISPLAYSURF, REDPILERECT, BLACKPILERECT, REDTOKENIMG, typegame, basicfont
-    global BLACKTOKENIMG, BOARDIMG, ARROWIMG, ARROWRECT_L, HUMANWINNERIMG, ARROWRECT
+    global BLACKTOKENIMG, BOARDIMG, ARROWIMG_L, ARROWRECT_L, ARROWIMG_R, ARROWRECT_R, HUMANWINNERIMG, ARROWRECT
     global COMPUTERWINNERIMG, WINNERRECT, TIEWINNERIMG
   
     pygame.init()
@@ -68,9 +67,8 @@ def main():
     BOARDIMG = pygame.image.load('new 4row board.png')
     BOARDIMG = pygame.transform.smoothscale(BOARDIMG, (SPACESIZE, SPACESIZE))
 
-    HUMANWINNERIMG = pygame.image.load(
-        'new winner right_png.png')  # <-- replaced image
-    COMPUTERWINNERIMG = pygame.image.load('new winner left_png.png')
+    HUMANWINNERIMG = pygame.image.load('new winner left_png.png')  # <-- replaced image
+    COMPUTERWINNERIMG = pygame.image.load('new winner right_png.png')
     TIEWINNERIMG = pygame.image.load('4row_tie.png')
     WINNERRECT = HUMANWINNERIMG.get_rect()
     WINNERRECT.center = (int(WINDOWWIDTH / 2), int(WINDOWHEIGHT / 2))
@@ -83,7 +81,7 @@ def main():
   
     ARROWIMG_R = pygame.image.load('new shovel right.png')
     ARROWRECT_R = ARROWIMG_R.get_rect()
-    ARROWRECT_R.left = BLACKPILERECT.left + 10
+    ARROWRECT_R.right = BLACKPILERECT.left + 10
     ARROWRECT_R.centery = REDPILERECT.centery
   
     isFirstGame = True
@@ -101,7 +99,7 @@ def runGame(isFirstGame, typegame):
             turn = COMPUTER
         else:
             turn = HUMAN
-        showHelp = True
+        showHelp = False
     else:
         # Randomly choose who goes first.
         if random.randint(0, 1) == 0:
@@ -117,7 +115,7 @@ def runGame(isFirstGame, typegame):
         if typegame == '2P':
             if turn == HUMAN:
                 # First player's turn.
-                getHumanMove(mainBoard, showHelp, RED, typegame)
+                getHumanMove(mainBoard, turn, RED, typegame)
                 if showHelp:
                     # turn off help arrow after the first move
                     showHelp = False
@@ -127,12 +125,12 @@ def runGame(isFirstGame, typegame):
                 turn = COMPUTER  # switch to other player's turn
             else:
                 # Second player's turn.
-                getHumanMove(mainBoard, showHelp, BLACK, typegame)
+                getHumanMove(mainBoard, turn, BLACK, typegame)
                 if showHelp:
                     # turn off help arrow after the first move
                     showHelp = False
                 if isWinner(mainBoard, BLACK):
-                    winnerImg = HUMANWINNERIMG
+                    winnerImg = COMPUTERWINNERIMG
                     break
                 turn = HUMAN  # switch to other player's turn
 
@@ -144,7 +142,7 @@ def runGame(isFirstGame, typegame):
         else:
             if turn == HUMAN:
                 # Human player's turn.
-                getHumanMove(mainBoard, showHelp, RED, typegame)
+                getHumanMove(mainBoard, turn, RED, typegame)
                 if showHelp:
                     # turn off help arrow after the first move
                     showHelp = False
@@ -275,10 +273,12 @@ def getHumanMove(board, isLeftMove, colour, typegame):
         else:
             drawBoard(board)
 
-        if isLeftMove:
+        if isLeftMove == 'HUMAN':
             # Show the help arrow for the player's first move.
+            #DISPLAYSURF.fill(SAGE_GREEN) 
             DISPLAYSURF.blit(ARROWIMG_L, ARROWRECT_L)
         else:
+            #DISPLAYSURF.fill(SAGE_GREEN) 
             DISPLAYSURF.blit(ARROWIMG_R, ARROWRECT_R)
 
         pygame.display.update()
