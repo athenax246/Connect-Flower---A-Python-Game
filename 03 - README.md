@@ -3,9 +3,9 @@ Fall 2022 NE 111, project: Connect Four -> Connect Flower
 
 Repl links:
 
-Old version with comments: https://replit.com/@ToastyBread1/NE111-Connect4#main.py
+Old version (with detailed comments): https://replit.com/@ToastyBread1/NE111-Connect4#main.py
 
 New version: https://replit.com/@AthenaX1/NE-111-project-try02#main.py
 
-Our video: (edited by Juman)
+Our video (edited by Juman):
 https://drive.google.com/file/d/13xYeklqBgNQSlmi0Mjb4u1DRYd4hCuAy/view
