@@ -21,4 +21,6 @@ The first gardiner to make a series of five connected flowers wins the game.
 If the board is filled and neither player has five in a row, the game is tied.
 The first player is randomly decided during each new game.
 In a game versus AI, the computer will go first.
+
+*Note that this applies only to the new version of the game.
 '''
