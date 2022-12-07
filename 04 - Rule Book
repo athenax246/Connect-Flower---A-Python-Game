@@ -1,0 +1,24 @@
+'''
+Welcome to Connect Flower!
+# of players: 2
+Goal of the game: 
+Be the first to plant five of your flowers in a row vertically, horizontally, or diagonally. 
+Setup:
+The board consists of a 9x8 flower bed 
+Each player uses a flower playing piece 
+Rules:
+You and another player are gardiners! Gardiners take turns planting flowers in the flower bed. 
+To begin the game, choose whether to play against the computer AI, or another person.
+There are two modes of the game: 
+Two human players playing against each other 
+One human player playing against the computer
+The player can switch between the different modes of the game by changing the variable typegame.
+Left Gardiner plants pink flowers, while Right Gardiner plants purple flowers.
+In a game versus AI, you will be Left Gardiner
+On your turn, drag and drop a flower above a column of the flower bed. The flower falls in the lowest unoccupied row of that column. 
+When a column has seven flowers, it is full and can no longer be planted in.
+The first gardiner to make a series of five connected flowers wins the game.
+If the board is filled and neither player has five in a row, the game is tied.
+The first player is randomly decided during each new game.
+In a game versus AI, the computer will go first.
+'''
