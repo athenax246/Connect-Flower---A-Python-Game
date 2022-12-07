@@ -1,17 +1,10 @@
-
-# Buggy's Bug Description: When dropping a token on a tall stack, the token appears to drop past the top token on the stack.
-
-# Four-In-A-Row (a Connect Four clone)
-# By Al Sweigart al@inventwithpython.com
-# http://inventwithpython.com/pygame
-# Released under a "Simplified BSD" license
+# repl link: https://replit.com/@AthenaX1/NE-111-project-try02#main.py
 
 import random, copy, sys, pygame
 from pygame.locals import *
-from replit import audio
 
-BOARDWIDTH = 7  # how many spaces wide the board is
-BOARDHEIGHT = 7  # how many spaces tall the board is
+BOARDWIDTH = 9  # how many spaces wide the board is
+BOARDHEIGHT = 8  # how many spaces tall the board is
 assert BOARDWIDTH >= 4 and BOARDHEIGHT >= 4, 'Board must be at least 4x4.'
 
 DIFFICULTY = 2  # how many moves to look ahead. (>2 is usually too much)
@@ -19,8 +12,8 @@ DIFFICULTY = 2  # how many moves to look ahead. (>2 is usually too much)
 SPACESIZE = 50  # size of the tokens and individual board spaces in pixels
 
 FPS = 30  # frames per second to update the screen
-WINDOWWIDTH = 640  # width of the program's window, in pixels
-WINDOWHEIGHT = 480  # height in pixels
+WINDOWWIDTH = 800  # width of the program's window, in pixels
+WINDOWHEIGHT = 600  # height in pixels
 
 XMARGIN = int((WINDOWWIDTH - BOARDWIDTH * SPACESIZE) / 2)
 YMARGIN = int((WINDOWHEIGHT - BOARDHEIGHT * SPACESIZE) / 2)
@@ -34,17 +27,16 @@ TEXTCOLOR = WHITE
 RED = 'red'
 BLACK = 'black'
 EMPTY = None
-HUMAN = 'human'
-COMPUTER = 'computer'
-
-typegame = '2P'  #'AI' or '2P'
-
+P1 = 'human'
+P2 = 'p2'
 
 def main():
     global FPSCLOCK, DISPLAYSURF, REDPILERECT, BLACKPILERECT, REDTOKENIMG, typegame, basicfont
-    global BLACKTOKENIMG, BOARDIMG, ARROWIMG_L, ARROWRECT_L, ARROWIMG_R, ARROWRECT_R, HUMANWINNERIMG, ARROWRECT
-    global COMPUTERWINNERIMG, WINNERRECT, TIEWINNERIMG
+    global BLACKTOKENIMG, BOARDIMG, ARROWIMG_L, ARROWRECT_L, ARROWIMG_R, ARROWRECT_R, P1WINNERIMG, ARROWRECT
+    global P2WINNERIMG, WINNERRECT, TIEWINNERIMG
   
+    gameMode()
+    
     pygame.init()
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
@@ -67,10 +59,10 @@ def main():
     BOARDIMG = pygame.image.load('new 4row board.png')
     BOARDIMG = pygame.transform.smoothscale(BOARDIMG, (SPACESIZE, SPACESIZE))
 
-    HUMANWINNERIMG = pygame.image.load('new winner left_png.png')  # <-- replaced image
-    COMPUTERWINNERIMG = pygame.image.load('new winner right_png.png')
+    P1WINNERIMG = pygame.image.load('new winner left_png.png')  # <-- replaced image
+    P2WINNERIMG = pygame.image.load('new winner right_png.png')
     TIEWINNERIMG = pygame.image.load('4row_tie.png')
-    WINNERRECT = HUMANWINNERIMG.get_rect()
+    WINNERRECT = P1WINNERIMG.get_rect()
     WINNERRECT.center = (int(WINDOWWIDTH / 2), int(WINDOWHEIGHT / 2))
 
     ARROWIMG_L = pygame.image.load('new shovel left.png')
@@ -78,61 +70,60 @@ def main():
     ARROWRECT_L.left = REDPILERECT.right + 10
     ARROWRECT_L.centery = REDPILERECT.centery
 
-  
     ARROWIMG_R = pygame.image.load('new shovel right.png')
     ARROWRECT_R = ARROWIMG_R.get_rect()
-    ARROWRECT_R.right = BLACKPILERECT.left + 10
+    ARROWRECT_R.right = BLACKPILERECT.left - 10
     ARROWRECT_R.centery = REDPILERECT.centery
   
     isFirstGame = True
-
+    
     while True:
-        runGame(isFirstGame, typegame)
-        isFirstGame = False
-
+            runGame(isFirstGame, typegame)
+            isFirstGame = False
+            
+    
+def gameMode():
+    global typegame
+    gamemode = input("Select a gamemode:\n  (1) AI\n  (2) 2 Player\n\n")
+    
+    if gamemode == '1':
+        typegame = 'AI'
+        
+    elif gamemode == '2':
+        typegame = '2P'
+        
+    else:
+        print("Not a real gamemode, type a number between 1 and 2: ")
+        gameMode()
 
 def runGame(isFirstGame, typegame):
-    if isFirstGame and typegame == 'AI':
-        # Let the computer go first on the first game, so the player
-        # can see how the tokens are dragged from the token piles.
+    if isFirstGame and typegame == 'AI': #Lets the AI go first if AI mode is being played
+            turn = P2
+    else: # Randomly choose who goes first.
         if random.randint(0, 1) == 0:
-            turn = COMPUTER
+            turn = P2
         else:
-            turn = HUMAN
-        showHelp = False
-    else:
-        # Randomly choose who goes first.
-        if random.randint(0, 1) == 0:
-            turn = COMPUTER
-        else:
-            turn = HUMAN
-        showHelp = False
+            turn = P1
 
     # Set up a blank board data structure.
     mainBoard = getNewBoard()
 
     while True:  # main game loop
         if typegame == '2P':
-            if turn == HUMAN:
+            if turn == P1:
                 # First player's turn.
                 getHumanMove(mainBoard, turn, RED, typegame)
-                if showHelp:
-                    # turn off help arrow after the first move
-                    showHelp = False
                 if isWinner(mainBoard, RED):
-                    winnerImg = HUMANWINNERIMG
+                    winnerImg = P1WINNERIMG
                     break
-                turn = COMPUTER  # switch to other player's turn
+                turn = P2  # switch to other player's turn
             else:
                 # Second player's turn.
                 getHumanMove(mainBoard, turn, BLACK, typegame)
-                if showHelp:
-                    # turn off help arrow after the first move
-                    showHelp = False
                 if isWinner(mainBoard, BLACK):
-                    winnerImg = COMPUTERWINNERIMG
+                    winnerImg = P2WINNERIMG
                     break
-                turn = HUMAN  # switch to other player's turn
+                turn = P1  # switch to other player's turn
 
             if isBoardFull(mainBoard):
                 # A completely filled board means it's a tie.
@@ -140,25 +131,23 @@ def runGame(isFirstGame, typegame):
                 break
 
         else:
-            if turn == HUMAN:
+            if turn == P1:
                 # Human player's turn.
+                
                 getHumanMove(mainBoard, turn, RED, typegame)
-                if showHelp:
-                    # turn off help arrow after the first move
-                    showHelp = False
                 if isWinner(mainBoard, RED):
-                    winnerImg = HUMANWINNERIMG
+                    winnerImg = P1WINNERIMG
                     break
-                turn = COMPUTER  # switch to other player's turn
+                turn = P2  # switch to other player's turn
             else:
                 # Computer player's turn.
                 column = getComputerMove(mainBoard)
                 animateComputerMoving(mainBoard, column)
                 makeMove(mainBoard, BLACK, column)
                 if isWinner(mainBoard, BLACK):
-                    winnerImg = COMPUTERWINNERIMG
+                    winnerImg = P2WINNERIMG
                     break
-                turn = HUMAN  # switch to other player's turn
+                turn = P1  # switch to other player's turn
 
             if isBoardFull(mainBoard):
                 # A completely filled board means it's a tie.
@@ -228,10 +217,13 @@ def getNewBoard():
     return board
 
 
-def getHumanMove(board, isLeftMove, colour, typegame):
+def getHumanMove(board, turn, colour, typegame):
     draggingToken = False
     tokenx, tokeny = None, None
+    
+    
     while True:
+               
         for event in pygame.event.get():  # event handling loop
             if event.type == QUIT:
                 pygame.quit()
@@ -256,13 +248,13 @@ def getHumanMove(board, isLeftMove, colour, typegame):
                     column = int((tokenx - XMARGIN) / SPACESIZE)
                     if isValidMove(board, column):
                         animateDroppingToken(board, column, colour)
-                        board[column][getLowestEmptySpace(board,
-                                                          column)] = colour
+                        board[column][getLowestEmptySpace(board, column)] = colour
                         drawBoard(board)
                         pygame.display.update()
                         return
                 tokenx, tokeny = None, None
                 draggingToken = False
+        
         if tokenx != None and tokeny != None:
             drawBoard(
                 board, {
@@ -272,15 +264,12 @@ def getHumanMove(board, isLeftMove, colour, typegame):
                 })
         else:
             drawBoard(board)
-
-        if isLeftMove == 'HUMAN':
-            # Show the help arrow for the player's first move.
-            #DISPLAYSURF.fill(SAGE_GREEN) 
+        
+        if turn == P1:
             DISPLAYSURF.blit(ARROWIMG_L, ARROWRECT_L)
-        else:
-            #DISPLAYSURF.fill(SAGE_GREEN) 
+        if turn == P2:
             DISPLAYSURF.blit(ARROWIMG_R, ARROWRECT_R)
-
+        
         pygame.display.update()
         FPSCLOCK.tick()
 
@@ -412,28 +401,28 @@ def isBoardFull(board):
 
 def isWinner(board, tile):
     # check horizontal spaces
-    for x in range(BOARDWIDTH - 3):
+    for x in range(BOARDWIDTH - 4):
         for y in range(BOARDHEIGHT):
             if board[x][y] == tile and board[x + 1][y] == tile and board[
-                    x + 2][y] == tile and board[x + 3][y] == tile:
+                    x + 2][y] == tile and board[x + 3][y] == tile and board[x + 4][y] == tile:
                 return True
     # check vertical spaces
     for x in range(BOARDWIDTH):
-        for y in range(BOARDHEIGHT - 3):
+        for y in range(BOARDHEIGHT - 4):
             if board[x][y] == tile and board[x][y + 1] == tile and board[x][
-                    y + 2] == tile and board[x][y + 3] == tile:
+                    y + 2] == tile and board[x][y + 3] == tile and board[x][y + 4] == tile:
                 return True
     # check / diagonal spaces
-    for x in range(BOARDWIDTH - 3):
-        for y in range(3, BOARDHEIGHT):
+    for x in range(BOARDWIDTH - 4):
+        for y in range(4, BOARDHEIGHT):
             if board[x][y] == tile and board[x + 1][y - 1] == tile and board[
-                    x + 2][y - 2] == tile and board[x + 3][y - 3] == tile:
+                    x + 2][y - 2] == tile and board[x + 3][y - 3] == tile and board[x + 4][y - 4] == tile:
                 return True
     # check \ diagonal spaces
-    for x in range(BOARDWIDTH - 3):
-        for y in range(BOARDHEIGHT - 3):
+    for x in range(BOARDWIDTH - 4):
+        for y in range(BOARDHEIGHT - 4):
             if board[x][y] == tile and board[x + 1][y + 1] == tile and board[
-                    x + 2][y + 2] == tile and board[x + 3][y + 3] == tile:
+                    x + 2][y + 2] == tile and board[x + 3][y + 3] == tile and board[x + 4][y + 4] == tile:
                 return True
     return False
 
