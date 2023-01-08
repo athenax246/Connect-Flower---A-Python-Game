@@ -1,5 +1,5 @@
-# NE-111 Project :)
-upgraded Connect Four -> Connect Flower
+# an upgrade to the classic Connect Four, hope that these flowers can bring a smile to your face :)
+
 
 Repl links:
 
