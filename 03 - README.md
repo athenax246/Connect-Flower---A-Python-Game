@@ -1,4 +1,4 @@
-# an upgrade to the classic Connect Four, hope that these flowers can bring a smile to your face :)
+# An upgrade to the classic Connect Four, hope that these flowers can bring a smile to your face :)
 
 
 Repl links:
