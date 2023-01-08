@@ -1,22 +1,3 @@
-# Source: from inventwithpython.com, buggy programs
-# This version of the game has a bug in it. See if you can figure out how to fix it.
-# http://inventwithpython.com/pygame/buggy
-# Bug Description: When dropping a token on a tall stack, the token appears to drop past the top token on the stack.
-
-# Four-In-A-Row (a Connect Four clone)
-# By Al Sweigart al@inventwithpython.com
-# http://inventwithpython.com/pygame
-# Released under a "Simplified BSD" license
-
-#Current distribution: (these are assigned with random name selector, feel free to change anything!)
-#Part 1 - Juman 
-#Part 2 - Athena
-#Part 3 - Kohinoor
-#Part 4 - Iris
-#The parts are commented on the source code
-
-# ------- first person starts here ********* Juman
-
 import random, copy, sys, pygame
 from pygame.locals import *
 
@@ -128,7 +109,7 @@ def runGame(isFirstGame):
             winnerImg = TIEWINNERIMG
             break
 
-# ------- second person starts here ********* Athena
+
     while True:
         # the while True loop keep repeating the code inside it until the player clicks the mouse or quits.
         drawBoard(mainBoard)  #create the mainboard
@@ -250,7 +231,7 @@ def getHumanMove(board, isFirstMove):
                 tokenx, tokeny = None, None #reset token location variables
                 draggingToken = False #reset dragging variable
                 
-# ------ person 3 starts comments ****** Kohinoor
+
         if tokenx != None and tokeny != None:
             drawBoard(board, {'x':tokenx - int(SPACESIZE / 2), 'y':tokeny - int(SPACESIZE / 2), 'color':RED})
         else:
@@ -340,7 +321,7 @@ def getPotentialMoves(board, tile, lookAhead):
             continue
         makeMove(dupeBoard, tile, firstMove)
 
-# ------ person 4 comments here ****** Iris
+
         if isWinner(dupeBoard, tile):
             # a winning move automatically gets a perfect fitness
             potentialMoves[firstMove] = 1
